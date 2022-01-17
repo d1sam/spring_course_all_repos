@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:property-placeholder location="classpath:myApp.properties"/>
+
+    <bean id="myPet"
+          class="ua.od.atomspace.spring_introduction.Cat">
+    </bean>
+
+    <!-- внедрение зависимостей с помощью конструктора -->
+    <bean id="myPerson"
+          class="ua.od.atomspace.spring_introduction.Person">
+        <constructor-arg ref="myPet"/>
+    </bean>
+
+    <!-- внедрение зависимостей с помощью сеттера -->
+    <bean id="myPerson2"
+          class="ua.od.atomspace.spring_introduction.Person">
+        <!-- pet -> setPet(myPet) -->
+        <property name="pet"
+                  ref="myPet"/>
+        <!-- харкод того как засетить примитив -->
+        <property name="age"
+                  value="18"/>
+        <!-- лучше лучше не делать так как выше, c а пользоваться файлом .properties -->
+        <property name="surName"
+                  value="${person.surName}"/>
+    </bean>
+
+</beans>

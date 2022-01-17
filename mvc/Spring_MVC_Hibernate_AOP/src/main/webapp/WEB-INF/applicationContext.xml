@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+    	http://www.springframework.org/schema/context
+    	http://www.springframework.org/schema/context/spring-context.xsd
+    	http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:component-scan base-package="com.dmitryshulga.spring.mvc_hibernate_aop"/>
+    <!--в каком пакете будет поиск компонентов (бинов)-->
+    <mvc:annotation-driven/> <!--добавление поддержки форматирования, валидации и различных преобразований-->
+    <aop:aspectj-autoproxy/> <!--добавление поддержки aop-->
+
+    <!--бин, который описывает как мы будем работать с нашим view-->
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver"><!--класс, который за это отвечает-->
+        <!--прописываем преффикс и суффикс для того, чтобы можно было образаться ко view просто по имени, а конфигурация добавит недостающие элементы-->
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--коннекшен пул, который нужен для быстрого подключения к БД-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"><!-- создаем бин, который отвечает за подключение к БД -->
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/><!-- инициализируем поле, отвечающее за драйвер JDBC-->
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/my_db?useSSL=false"/><!--прописываем урлу к БД-->
+        <property name="user" value="root"/><!--производим лог он процесс в бд под неймом root-->
+        <property name="password" value="d1sam"/><!-- пароль d1sam -->
+    </bean>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <!--создаем бин, сешн фэктори от Hibernate -->
+        <property name="dataSource" ref="dataSource"/>
+        <!--инициализируем датасорс созданным бином типа коннекшен пул-->
+        <property name="packagesToScan" value="com.dmitryshulga.spring.mvc_hibernate_aop.entity"/>
+        <!--указываем в каком пакете нужно искать наши энтити-->
+        <property name="hibernateProperties">
+            <props><!-- указываем характеристики session factory -->
+                <!-- работаем диалектом скл базы майскл -->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <!-- показываем скл команды в терминале -->
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+    <!--создаем бин, который будет заниматься открытимем и закрытиеем транзакций hibernate-->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+</beans>
+
+
+
+
+

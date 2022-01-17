@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" version="3.1">
+
+    <!-- этот файл нужен для конфигурации диспетчер сервлета -->
+    <display-name>spring-course-mvc-hibernate-aop</display-name>
+
+    <absolute-ordering/>
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name><!--имя диспетчер сервлета-->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet
+        </servlet-class><!--клас, который отвечает за диспетчер серлвет-->
+        <init-param>
+            <param-name>contextConfigLocation
+            </param-name><!--имя аттрибута, который отвечает за конфигурацию диспетчер сервлета-->
+            <param-value>/WEB-INF/applicationContext.xml
+            </param-value><!--файл, который отвечает за эту же конфигурацию-->
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!--url адресс для диспетчер сервлета-->
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/
+        </url-pattern><!--означает, что какой-бы адресс мы бы не прописали, то по-любому он будет приходить на диспетчер сервлет-->
+    </servlet-mapping>
+</web-app>
